@@ -1,0 +1,30 @@
+/* UniFlow · 24px 圆角线性图标。配套独立 SVG 见 assets/icons。 */
+window.UniFlowIcons = {
+  overview: '<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',
+  inbox: '<path d="M4 4h16l2 10v6H2v-6L4 4Z"/><path d="M2 14h6l2 3h4l2-3h6"/>',
+  calendar: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4m10-4v4M3 11h18m-13 4h2m4 0h2m-8 3h2"/>',
+  tasks: '<rect x="4" y="4" width="16" height="17" rx="3"/><path d="M9 4V2h6v2M8 11l2 2 5-5m-7 9h8"/>',
+  sparkles: '<path d="m12 3 2.6 6.4L21 12l-6.4 2.6L12 21l-2.6-6.4L3 12l6.4-2.6L12 3Zm7-2v4m-2-2h4"/>',
+  settings: '<path d="m9 3-.8 3-2.8 1-2.5 2 1.9 2v3l-1.9 2 2.5 2 2.8 1 .8 3h6l.8-3 2.8-1 2.5-2-1.9-2v-3l1.9-2-2.5-2-2.8-1L15 3Z"/><circle cx="12" cy="12.5" r="3"/>',
+  search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
+  bell: '<path d="M5 10a7 7 0 0 1 14 0v5l2 3H3l2-3v-5Zm4 11h6"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  arrow: '<path d="M4 12h16m-6-6 6 6-6 6"/>',
+  chevron: '<path d="m9 5 7 7-7 7"/>',
+  close: '<path d="m6 6 12 12M6 18 18 6"/>',
+  upload: '<path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"/>',
+  check: '<path d="m5 12 4 4L19 6"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  location: '<path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/>',
+  document: '<path d="M14 3H5v18h14V8l-5-5Zm0 0v6h5M8 13h8m-8 4h6"/>',
+  book: '<path d="M12 5C8 2 3 3 3 3v16s5-1 9 2c4-3 9-2 9-2V3s-5-1-9 2Zm0 0v16"/>',
+  link: '<path d="m10 14 4-4m-6 6-2 2a4.2 4.2 0 0 1-6-6l4-4a4.2 4.2 0 0 1 6 0m2 0 2-2a4.2 4.2 0 0 1 6 6l-4 4a4.2 4.2 0 0 1-6 0" transform="translate(2 -1)"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 7 9 7 9-7"/>',
+  filter: '<path d="M3 6h18M6 12h12m-9 6h6"/>',
+  download: '<path d="M12 3v13m-5-5 5 5 5-5M4 17v4h16v-4"/>',
+  palette: '<path d="M12 3a9 9 0 1 0 0 18h2a2 2 0 0 0 1-4 2 2 0 0 1 1-4h2c5 0 3-10-6-10Z"/><path d="M7 8h.01M12 6h.01M17 8h.01M5 13h.01" stroke-width="2.8"/>',
+  shield: '<path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 3 3 5-6"/>',
+  undo: '<path d="M4 5v6h6M4 11a8 8 0 1 1 1 7"/>',
+  group: '<circle cx="9" cy="7" r="3"/><path d="M3 21v-4a6 6 0 0 1 12 0v4m2-17a3 3 0 0 1 0 6m1 4a5 5 0 0 1 3 5v2"/>'
+};
+window.ufIcon = (name, cls = '') => `<svg class="icon ${cls}" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${window.UniFlowIcons[name] || window.UniFlowIcons.document}</svg>`;

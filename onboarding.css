@@ -1,0 +1,25 @@
+/* Reuses UniFlow's existing colors, glass cards, controls and illustration assets. */
+.onboarding-pending .sidebar,.onboarding-pending .app-shell,.onboarding-pending .skip-link,
+.onboarding-active .sidebar,.onboarding-active .app-shell,.onboarding-active .skip-link{display:none}
+.onboarding-active{overflow:hidden}
+#onboarding[hidden]{display:none}
+#onboarding{position:fixed;inset:0;z-index:90;overflow:auto;overscroll-behavior:contain;display:flex;align-items:safe center;justify-content:center;padding:calc(28px + var(--uf-safe-top,env(safe-area-inset-top,0px))) calc(20px + var(--uf-safe-right,0px)) calc(28px + var(--uf-safe-bottom,env(safe-area-inset-bottom,0px))) calc(20px + var(--uf-safe-left,0px));background:radial-gradient(ellipse at 85% 15%,#d9f8ee,transparent 55%),radial-gradient(ellipse at 10% 80%,#e0eaff,transparent 60%),var(--bg);min-height:100dvh}
+.onboarding-card{width:100%;max-width:470px;flex-shrink:0;padding:36px 32px;border:1px solid #fff;border-radius:28px;background:#ffffffd9;box-shadow:var(--shadow);text-align:center}
+.welcome-logo{display:block;width:100px;height:100px;margin:0 auto 24px}
+.onboarding-card h1{font-size:28px;letter-spacing:-.5px;overflow-wrap:anywhere}
+.onboarding-card h1[tabindex="-1"]:focus{outline:none}
+.onboarding-subtitle{color:var(--muted);margin:8px 0 28px}
+.onboarding-card form{text-align:left}.onboarding-card input{width:100%;min-width:0;font-size:16px}
+.onboarding-note{font-size:12px;color:var(--muted);line-height:1.8}
+.onboarding-primary{width:100%;justify-content:center;margin-top:14px;min-height:48px}
+#profile-error:not(:empty){margin:12px 0;overflow-wrap:anywhere}
+.tutorial-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.tutorial-top img{width:42px;height:42px}
+.tutorial-art{width:140px;height:140px;margin:12px auto 24px;display:grid;place-items:center;border:1px solid #fff;border-radius:38px;background:linear-gradient(135deg,#e2eaff,#dff9ef)}
+.tutorial-art img{width:100px;height:100px}.tutorial-description{margin:18px 0;text-align:left;color:var(--ink);line-height:1.9}
+.tutorial-note{padding:14px 16px;background:#edf3fd;border-radius:14px;color:#526580;font-size:12px;text-align:left;line-height:1.8}
+.tutorial-dots{display:flex;justify-content:center;gap:8px;margin:24px 0}.tutorial-dots span{width:8px;height:8px;border-radius:8px;background:#d4deef}.tutorial-dots .active{width:24px;background:var(--brand)}
+.tutorial-actions{display:flex;justify-content:space-between;gap:12px}.tutorial-actions .button{min-height:46px}
+[data-profile-name]{overflow-wrap:anywhere}.profile-name{min-width:0}.profile-name [data-profile-name]{display:block;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:600px){.onboarding-card{padding:28px 22px}.onboarding-card h1{font-size:25px}.welcome-logo{width:88px;height:88px}.tutorial-art{width:118px;height:118px;margin-bottom:18px}.tutorial-art img{width:88px;height:88px}.page-heading h1{overflow-wrap:anywhere}}
+@media(max-height:600px){#onboarding{padding-top:calc(16px + var(--uf-safe-top,env(safe-area-inset-top,0px)));padding-bottom:calc(16px + var(--uf-safe-bottom,env(safe-area-inset-bottom,0px)))}.onboarding-card{padding:20px 22px}.welcome-logo{width:56px;height:56px;margin-bottom:12px}.onboarding-subtitle{margin-bottom:16px}.tutorial-art{width:64px;height:64px;margin:8px auto 12px}.tutorial-art img{width:50px;height:50px}.tutorial-dots{margin:16px 0}}
+@media(prefers-reduced-motion:reduce){#onboarding *{scroll-behavior:auto}}

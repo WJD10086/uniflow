@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN" class="onboarding-pending">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#2563eb">
+  <meta http-equiv="Content-Security-Policy" content="frame-src 'none'; object-src 'none'; base-uri 'self'">
+  <meta name="description" content="UniFlow 校园事务助手，帮助你整理通知、任务与日程。">
+  <title>UniFlow · 让校园生活，自然有序</title>
+  <link rel="icon" href="assets/brand/uniflow-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="native.css">
+  <link rel="stylesheet" href="onboarding.css">
+  <link rel="stylesheet" href="weather.css">
+  <link rel="stylesheet" href="system-integrations.css">
+  <link rel="stylesheet" href="ai.css">
+  <script defer src="js/notice-time.js"></script>
+  <script defer src="js/notification-relevance.js"></script>
+  <script defer src="js/inbox-policy.js"></script>
+  <script defer src="js/profile-store.js"></script>
+  <script defer src="js/system-service.js"></script>
+  <script defer src="js/weather-service.js"></script>
+  <script defer src="js/location-service.js"></script>
+  <script defer src="js/task-persistence.js"></script>
+  <script defer src="icons.js"></script><script defer src="js/task-store.js"></script><script defer src="js/calendar-view.js"></script><script defer src="js/reminder-service.js"></script><script defer src="js/message-service.js"></script><script defer src="js/share-service.js"></script><script defer src="js/ai-client.js"></script><script defer src="js/image-ocr-service.js"></script><script defer src="app.js"></script>
+  <script defer src="js/native-shell.js"></script>
+  <script defer src="js/onboarding.js"></script>
+  <script defer src="js/home-services.js"></script>
+  <script defer src="js/reminder-ui.js"></script>
+  <script defer src="js/share-ui.js"></script>
+  <script defer src="js/ai-ui.js"></script>
+  <script defer src="js/notification-capture-service.js"></script>
+  <script defer src="js/notification-capture-ui.js"></script>
+</head>
+<body>
+  <div id="onboarding" aria-label="UniFlow 欢迎与使用教程" hidden></div>
+  <a class="skip-link" href="#main">跳转到主要内容</a>
+  <aside class="sidebar" aria-label="主导航">
+    <a class="brand" href="#overview"><img src="assets/brand/uniflow-mark.svg" alt="UniFlow 标志"><span>Uni<span class="brand-flow">Flow</span><small>校园生活，自然有序</small></span></a>
+    <div class="workspace"><span class="workspace-avatar">U</span><div>我的校园空间<small>PERSONAL WORKSPACE</small></div><span class="workspace-dot"></span></div>
+    <div class="nav-label">工作空间</div>
+    <nav id="navigation"></nav>
+    <div class="sidebar-bottom">
+      <div class="flow-tip"><button class="text-button" data-action="import"><span class="mini-spark" data-icon="sparkles"></span>导入内容 <span aria-hidden="true">↗</span></button></div>
+      <button class="profile" data-view="settings"><span class="avatar" data-profile-avatar>U</span><span class="profile-name"><span data-profile-name>我的昵称</span><small>开启有序的一天</small></span><span data-icon="settings"></span></button>
+    </div>
+  </aside>
+  <div class="app-shell">
+    <header class="topbar"><div class="breadcrumb">我的空间 <span>/</span> <strong id="breadcrumb-title">今日概览</strong></div><div class="topbar-actions"><button class="search-trigger" data-action="search" aria-label="搜索通知与任务"><span data-icon="search"></span><span>搜索通知与任务</span><kbd>Ctrl K</kbd></button><button class="icon-button" data-view="inbox" aria-label="查看通知收件箱"><span data-icon="bell"></span><i class="notification-dot"></i></button><button class="avatar small" data-profile-avatar data-view="settings" aria-label="打开偏好设置">U</button></div></header>
+    <div id="storage-error" class="storage-error" role="alert" hidden><span id="storage-error-text"></span><button class="text-button" data-action="reload-data">重新加载</button></div>
+    <main id="main" tabindex="-1"></main>
+    <footer class="app-footer"><span>UniFlow · 本地优先</span></footer>
+  </div>
+  <dialog id="modal"><div id="modal-content"></div></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>if (!window.HTMLDialogElement) document.body.insertAdjacentHTML('beforeend','<p>请使用新版浏览器打开 UniFlow。</p>');</script>
+</body>
+</html>

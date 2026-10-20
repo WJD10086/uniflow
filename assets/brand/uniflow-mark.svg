@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="tile" x1="9" y1="8" x2="114" y2="126" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".52" stop-color="#ecfcff"/><stop offset="1" stop-color="#dce4ff"/></linearGradient>
+    <linearGradient id="flow" x1="27" y1="40" x2="103" y2="88" gradientUnits="userSpaceOnUse"><stop stop-color="#1456f4"/><stop offset=".5" stop-color="#359afa"/><stop offset="1" stop-color="#5ce9af"/></linearGradient>
+    <linearGradient id="left" x1="33" y1="21" x2="53" y2="93" gradientUnits="userSpaceOnUse"><stop stop-color="#338ffa"/><stop offset="1" stop-color="#1235ea"/></linearGradient>
+    <linearGradient id="glass" x1="42" y1="43" x2="83" y2="101" gradientUnits="userSpaceOnUse"><stop stop-color="#b5e9ff" stop-opacity=".62"/><stop offset="1" stop-color="#f2fffd" stop-opacity=".85"/></linearGradient>
+  </defs>
+  <rect x="3" y="3" width="122" height="122" rx="34" fill="url(#tile)" stroke="#dce9fc"/>
+  <path d="M23 30Q23 21 31 25L49 33Q57 37 57 48V86L23 76Z" fill="url(#left)"/>
+  <path d="M76 55Q76 46 84 42L101 34Q108 31 108 39V83L76 98Z" fill="url(#flow)"/>
+  <path d="M80 66Q80 61 85 59L99 53Q105 51 105 57V89L80 98Z" fill="#f0ffff" fill-opacity=".82" stroke="#fff" stroke-width=".8"/>
+  <path d="m87 68 12-5m-12 14 12-5" stroke="#73c6e8" stroke-opacity=".6" stroke-width="4" stroke-linecap="round"/>
+  <path d="M23 42V79Q23 110 57 110H81Q107 108 108 84Q98 73 77 85L57 93Q27 99 23 74Z" fill="url(#flow)"/>
+  <path d="M49 33Q20 52 25 76Q30 97 54 94Q64 91 77 85Q97 74 108 84Q103 75 86 80L73 85L48 77Q13 67 49 33Z" fill="url(#glass)"/>
+  <path d="M29 85Q42 102 65 91L82 83Q98 76 106 82" stroke="#fff" stroke-opacity=".7" stroke-width="1.2"/>
+</svg>

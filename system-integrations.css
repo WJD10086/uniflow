@@ -1,0 +1,49 @@
+/* Reuse UniFlow's blue / mint palette and rounded dialogs. */
+.system-dialog{border:1px solid #e2e9f4;border-radius:24px;padding:0;width:min(520px,calc(100vw - 32px));max-height:calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow:auto;color:#172c4c;background:linear-gradient(150deg,#fff,#f2f8ff);box-shadow:0 24px 90px #193b662e}
+.system-dialog::backdrop{background:#15294466;backdrop-filter:blur(5px)}
+.guide-dialog{width:min(720px,calc(100vw - 32px))}
+.guide-list{padding:10px 20px 20px}
+.guide-list details{border-bottom:1px solid #e4ebf4}
+.guide-list summary{display:flex;align-items:center;gap:12px;padding:13px 4px;cursor:pointer;font-size:13px;font-weight:600}
+.guide-list summary span{color:#6687b5;font-size:10px;font-variant-numeric:tabular-nums}
+.guide-list details p{padding:0 4px 14px 34px;color:#667b98;font-size:12px;line-height:1.8}
+#reminder-settings select{max-width:155px;padding:10px;border:1px solid #dce5f1;border-radius:12px;background:white;color:inherit}
+.reminder-help{font-size:12px;color:#64748b;line-height:1.7;margin:0 0 14px}
+
+.share-dialog textarea{min-height:150px;resize:vertical}.share-dialog .detail-meta{margin-bottom:16px}
+/* Notification capture reuses settings and modal surfaces. */
+.capture-toggle input{width:20px;height:20px;accent-color:#2563eb;flex:none}
+.capture-sources-dialog{width:min(520px,calc(100% - 32px));max-height:90dvh}
+.capture-sources-dialog .modal-body{max-height:62dvh;overflow:auto}
+.capture-source-list{display:grid;gap:0}
+.capture-source{display:grid;grid-template-columns:36px minmax(0,1fr) 24px;gap:12px;align-items:center;min-height:58px;padding:9px 0;border-bottom:1px solid #e3eaf2;cursor:pointer}
+.capture-source[hidden]{display:none}
+.capture-source>span:nth-child(2){overflow-wrap:anywhere}
+.capture-source input{width:20px;height:20px;accent-color:#2563eb}
+.capture-source-icon{width:32px;height:32px;border-radius:6px;background:#edf4ff;display:grid;place-items:center;overflow:hidden;color:#2563eb}
+.capture-source-icon img{width:32px;height:32px;object-fit:contain}
+.capture-original{margin:14px 0;overflow-wrap:anywhere}.capture-original summary{cursor:pointer;color:#526885;font-size:13px}
+/* Relevance is separate from capture and business confirmation status. */
+.attention-note{margin:0 24px 8px;color:var(--text-muted,#64748b);font-size:13px;line-height:1.6}
+.attention-item+.attention-item{border-top:1px solid var(--border,#edf0f7)}
+.attention-item .notice-row{border-bottom:0}
+.attention-actions{display:flex;justify-content:flex-end;gap:20px;padding:0 24px 14px}
+.attention-actions button:disabled{opacity:.5;cursor:default}
+.tag.attention-new{background:#e8f1ff;color:#2563eb}
+.tag.relevance-relevant{background:#e8f5f0;color:#147d64}
+.tag.relevance-ordinary,.tag.relevance-excluded{background:#f0f2f6;color:#64748b}
+.tag.relevance-uncertain{background:#fff5df;color:#96630c}
+.notice-relevance{padding:14px 16px;margin:16px 0;border-radius:16px;background:#f5f8fd;border:1px solid #e6edf8}
+.notice-relevance .component-row{flex-wrap:wrap;gap:8px}
+.capture-history{margin:16px 0;overflow-wrap:anywhere}.capture-history summary{cursor:pointer;color:#526885;font-size:13px}.capture-history section{padding:14px 0;border-top:1px solid #e6edf8}.capture-history h4{margin:8px 0}.capture-history .button{margin-top:10px}
+.inbox-page .notice-title{flex-wrap:wrap}
+@media(max-width:600px){.attention-note{margin-inline:16px}.attention-actions{padding-inline:16px}.toolbar .filter-group{flex-wrap:wrap}#home-attention .card-head{align-items:flex-start}#home-attention .card-head>.text-button{flex-shrink:0}.notice-relevance .button{padding:9px 12px}}
+/* Inbox sections use the existing card palette and keep ordinary chat quiet. */
+.inbox-group > h2,.inbox-other > summary { display:flex; align-items:center; flex-wrap:wrap; gap:10px; padding:18px 16px; font-size:16px; font-weight:650; }
+.inbox-other { border-top:1px solid var(--border,#e4ebf0); }
+.inbox-other > summary { cursor:pointer; list-style:none; }
+.inbox-other > summary::before { content:'›'; font-size:22px; transition:transform .15s; }
+.inbox-other[open] > summary::before { transform:rotate(90deg); }
+.inbox-expand-hint { margin-left:auto; font-size:12px; font-weight:400; color:var(--muted,#718096); }
+.inbox-other[open] .inbox-expand-hint { display:none; }
+.inbox-group .card-note { padding:0 16px 12px; }

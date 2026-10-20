@@ -1,0 +1,34 @@
+/* Android system insets only. Browser layout and brand styling are unchanged. */
+html.native-android {
+  --uf-safe-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+  --uf-safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --uf-safe-left: var(--safe-area-inset-left, env(safe-area-inset-left, 0px));
+  --uf-safe-right: var(--safe-area-inset-right, env(safe-area-inset-right, 0px));
+}
+.native-android body {
+  padding: var(--uf-safe-top) var(--uf-safe-right) 0 var(--uf-safe-left);
+}
+.native-android .sidebar {
+  top: var(--uf-safe-top);
+  bottom: var(--uf-safe-bottom);
+  left: var(--uf-safe-left);
+}
+.native-android .app-shell {
+  min-height: calc(100dvh - var(--uf-safe-top));
+  padding-bottom: var(--uf-safe-bottom);
+}
+.native-android dialog {
+  max-height: calc(100dvh - var(--uf-safe-top) - var(--uf-safe-bottom) - 32px);
+}
+.native-android .toast { bottom: calc(27px + var(--uf-safe-bottom)); }
+@media (max-width: 600px) {
+  .native-android .sidebar {
+    top: auto;
+    bottom: 0;
+    right: var(--uf-safe-right);
+    height: calc(71px + var(--uf-safe-bottom));
+    padding-bottom: var(--uf-safe-bottom);
+  }
+  .native-android .app-shell { padding-bottom: calc(71px + var(--uf-safe-bottom)); }
+  .native-android .toast { bottom: calc(88px + var(--uf-safe-bottom)); }
+}
