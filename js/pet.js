@@ -1,0 +1,279 @@
+﻿/* UniFlow 桌宠「小流」：入口场景 + 右下角常驻陪伴。
+   只读取 window.UniFlowApp 的数据与触发既有按钮，不改动 app.js 逻辑。 */
+(function () {
+  'use strict';
+
+  const GATE_SEEN = 'uf.pet.gate.seen';
+  const GATE_OFF = 'uf.pet.gate.off';
+  const PET_HIDDEN = 'uf.pet.hidden';
+  const NICK_KEY = 'uniflow.profile.v1';
+
+  const $ = (s, r = document) => r.querySelector(s);
+  const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const reduceMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+  function mascot(extraClass = '') {
+    return `<svg class="uf-pet-svg ${extraClass}" viewBox="0 0 120 124" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="ufPetBody" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#fbfdff"/><stop offset="55%" stop-color="#e4f0ff"/><stop offset="100%" stop-color="#b9d2f6"/>
+        </linearGradient>
+        <radialGradient id="ufPetBlush">
+          <stop offset="0%" stop-color="#ffb0c5" stop-opacity=".78"/><stop offset="100%" stop-color="#ffb0c5" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="ufPetGloss" cx="45%" cy="35%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity=".95"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="ufPetShadow">
+          <stop offset="0%" stop-color="#26406a" stop-opacity=".16"/><stop offset="100%" stop-color="#26406a" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <ellipse class="uf-pet-shadow" cx="60" cy="101" rx="27" ry="5" fill="url(#ufPetShadow)"/>
+      <g class="uf-pet-body">
+        <path d="M60 23c23 0 41 14 41 33 0 20-18 33-41 33S19 76 19 56c0-19 18-33 41-33Z"
+              fill="url(#ufPetBody)" stroke="#c6d9f6" stroke-width="1.6"/>
+        <ellipse cx="52" cy="38" rx="26" ry="12" fill="url(#ufPetGloss)" opacity=".55"/>
+        <g class="uf-pet-sprout">
+          <path d="M60 24c0-7 4.6-11.4 11-11.4-.8 8-5 12.2-11 11.4Z" fill="#43ddb6"/>
+          <path d="M60 24c-.9-7-5.6-10.2-11.6-9.2 1 8 5.7 11 11.6 9.2Z" fill="#79e6ca"/>
+          <path d="M60 25.5v-4" stroke="#35bfa0" stroke-width="2.4" stroke-linecap="round"/>
+        </g>
+        <g class="uf-pet-arms">
+          <ellipse class="uf-arm uf-arm--l" cx="26" cy="63" rx="6.6" ry="9.2" fill="#eaf3ff" stroke="#c6d9f6" stroke-width="1.3"/>
+          <ellipse class="uf-arm uf-arm--r" cx="94" cy="63" rx="6.6" ry="9.2" fill="#eaf3ff" stroke="#c6d9f6" stroke-width="1.3"/>
+        </g>
+        <g class="uf-pet-eyes uf-pet-eyes--open">
+          <ellipse class="uf-eye" cx="47" cy="55" rx="4.8" ry="5.9" fill="#28425f"/>
+          <ellipse class="uf-eye" cx="73" cy="55" rx="4.8" ry="5.9" fill="#28425f"/>
+          <circle cx="48.7" cy="52.6" r="1.5" fill="#fff" opacity=".95"/>
+          <circle cx="74.7" cy="52.6" r="1.5" fill="#fff" opacity=".95"/>
+        </g>
+        <g class="uf-pet-eyes uf-pet-eyes--happy">
+          <path d="M41.5 57c2.6-3.8 8.2-3.8 10.8 0" fill="none" stroke="#28425f" stroke-width="2.8" stroke-linecap="round"/>
+          <path d="M67.5 57c2.6-3.8 8.2-3.8 10.8 0" fill="none" stroke="#28425f" stroke-width="2.8" stroke-linecap="round"/>
+        </g>
+        <g class="uf-pet-brows">
+          <path d="M42 45c2.2-1.7 5.8-1.7 8 0" fill="none" stroke="#3c5a80" stroke-width="2.1" stroke-linecap="round"/>
+          <path d="M70 45c2.2-1.7 5.8-1.7 8 0" fill="none" stroke="#3c5a80" stroke-width="2.1" stroke-linecap="round"/>
+        </g>
+        <circle cx="35" cy="66" r="8" fill="url(#ufPetBlush)"/>
+        <circle cx="85" cy="66" r="8" fill="url(#ufPetBlush)"/>
+        <path class="uf-mouth uf-mouth--smile" d="M53 66.5c2.4 4.2 9.6 4.2 12 0" fill="none" stroke="#3b5b80" stroke-width="2.5" stroke-linecap="round"/>
+        <path class="uf-mouth uf-mouth--flat" d="M54 69h12" fill="none" stroke="#3b5b80" stroke-width="2.5" stroke-linecap="round"/>
+        <circle class="uf-pet-badge" cx="95" cy="31" r="7.5" fill="#ef5b6b"/>
+        <text class="uf-pet-badge-text" x="95" y="35" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff">!</text>
+      </g>
+    </svg>`;
+  }
+
+  /* ---------------- 状态 ---------------- */
+  function stateOf(tasks) {
+    const now = new Date();
+    let overdue = 0, open = 0, done = 0;
+    for (const t of tasks) {
+      if (t.done) { done += 1; continue; }
+      open += 1;
+      if (!t.date || t.dateRole === 'start') continue;
+      const stamp = new Date(`${t.date}T${t.time || '23:59'}:00+08:00`);
+      if (Number.isFinite(stamp.getTime()) && stamp < now) overdue += 1;
+    }
+    if (overdue) return { state: 'worried', overdue, open, done };
+    if (open === 0 && done > 0) return { state: 'happy', overdue: 0, open, done };
+    return { state: 'idle', overdue: 0, open, done };
+  }
+
+  const TIPS = [
+    '今天也要顺顺当当的',
+    '有通知就丢给我，我来拆成事项',
+    '按 Ctrl K 可以搜通知和任务',
+    '截止和日程我分得清，不会乱排',
+    '把重复的事交给我，每周自动补上',
+    '累了就点「今天留一点从容」'
+  ];
+
+  /* ---------------- 常驻桌宠 ---------------- */
+  let petEl = null;
+  let menuOpen = false;
+  let tipTimer = null;
+
+  function buildPet() {
+    const wrap = document.createElement('div');
+    wrap.id = 'uf-pet';
+    wrap.className = 'uf-pet';
+    wrap.dataset.state = 'idle';
+    wrap.innerHTML = `
+      <div class="uf-pet-bubble" role="status" hidden></div>
+      <div class="uf-pet-menu" hidden>
+        <button type="button" class="uf-pet-item" data-uf-pet-go>进入 UniFlow</button>
+        <button type="button" class="uf-pet-item" data-uf-pet-import>导入通知</button>
+        <button type="button" class="uf-pet-item" data-uf-pet-new>新建任务</button>
+        <button type="button" class="uf-pet-item uf-pet-item--quiet" data-uf-pet-hide>先藏起来</button>
+      </div>
+      <button type="button" class="uf-pet-button" aria-label="桌宠小流：点击打开快捷操作" aria-haspopup="true" aria-expanded="false">
+        ${mascot()}
+        <span class="uf-pet-dot" aria-hidden="true"></span>
+      </button>`;
+    document.body.append(wrap);
+    petEl = wrap;
+
+    wrap.querySelector('.uf-pet-button').addEventListener('click', () => {
+      if (menuOpen) closeMenu(); else openMenu();
+    });
+
+    wrap.addEventListener('mouseenter', () => { if (!menuOpen) say(randomTip(), 2600); });
+    wrap.addEventListener('mouseleave', () => { if (!menuOpen) hideBubble(); });
+
+    wrap.querySelector('[data-uf-pet-go]').addEventListener('click', () => {
+      closeMenu();
+      location.hash = 'overview';
+      document.getElementById('main')?.focus({ preventScroll: true });
+      say('回来啦，先看今天要做什么', 2600);
+    });
+    wrap.querySelector('[data-uf-pet-import]').addEventListener('click', () => {
+      closeMenu();
+      document.querySelector('[data-action="import"]')?.click();
+    });
+    wrap.querySelector('[data-uf-pet-new]').addEventListener('click', () => {
+      closeMenu();
+      location.hash = 'tasks';
+      setTimeout(() => document.querySelector('[data-action="new-task"]')?.click(), 120);
+    });
+    wrap.querySelector('[data-uf-pet-hide]').addEventListener('click', () => {
+      localStorage.setItem(PET_HIDDEN, '1');
+      closeMenu();
+      wrap.remove();
+      petEl = null;
+    });
+
+    document.addEventListener('click', e => {
+      if (!menuOpen) return;
+      if (!e.target.closest('#uf-pet')) closeMenu();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+  }
+
+  function randomTip() { return TIPS[Math.floor(Math.random() * TIPS.length)]; }
+
+  function say(text, ms = 3200) {
+    if (!petEl) return;
+    const bubble = petEl.querySelector('.uf-pet-bubble');
+    bubble.textContent = text;
+    bubble.hidden = false;
+    petEl.classList.add('is-talking');
+    clearTimeout(tipTimer);
+    if (ms) tipTimer = setTimeout(() => hideBubble(), ms);
+  }
+  function hideBubble() {
+    if (!petEl) return;
+    const bubble = petEl.querySelector('.uf-pet-bubble');
+    if (bubble) bubble.hidden = true;
+    petEl.classList.remove('is-talking');
+  }
+  function openMenu() {
+    if (!petEl) return;
+    menuOpen = true;
+    petEl.classList.add('is-open');
+    const menu = petEl.querySelector('.uf-pet-menu');
+    menu.hidden = false;
+    petEl.querySelector('.uf-pet-button').setAttribute('aria-expanded', 'true');
+    hideBubble();
+  }
+  function closeMenu() {
+    if (!petEl) return;
+    menuOpen = false;
+    petEl.classList.remove('is-open');
+    const menu = petEl.querySelector('.uf-pet-menu');
+    if (menu) menu.hidden = true;
+    petEl.querySelector('.uf-pet-button')?.setAttribute('aria-expanded', 'false');
+  }
+
+  function syncPet(tasks) {
+    if (!petEl) return;
+    const { state, overdue } = stateOf(tasks);
+    petEl.dataset.state = state;
+    const dot = petEl.querySelector('.uf-pet-dot');
+    dot.hidden = state !== 'worried';
+    const label = state === 'worried'
+      ? `桌宠小流：有 ${overdue} 项已过期，点击查看`
+      : '桌宠小流：点击打开快捷操作';
+    petEl.querySelector('.uf-pet-button').setAttribute('aria-label', label);
+    if (state === 'worried') say(`有 ${overdue} 件事过期了，点我看看`, 0);
+    else if (state === 'happy') say('今天的事项都完成啦，厉害', 3000);
+  }
+
+  /* ---------------- 入口场景 ---------------- */
+  function buildGate() {
+    const gate = document.createElement('div');
+    gate.id = 'uf-pet-gate';
+    gate.className = 'uf-pet-gate';
+    gate.setAttribute('role', 'dialog');
+    gate.setAttribute('aria-label', '欢迎回来');
+    gate.innerHTML = `
+      <div class="uf-gate-scene">
+        <span class="uf-gate-deco d1" aria-hidden="true"></span>
+        <span class="uf-gate-deco d2" aria-hidden="true"></span>
+        <span class="uf-gate-deco d3" aria-hidden="true"></span>
+        <span class="uf-gate-deco d4" aria-hidden="true"></span>
+        <p class="uf-gate-eyebrow">UNIFLOW · 桌宠</p>
+        <button type="button" class="uf-gate-pet" aria-label="点击小流进入 UniFlow">${mascot('uf-pet-svg--gate')}</button>
+        <p class="uf-gate-title">小流在等你</p>
+        <p class="uf-gate-sub">点一下，进入今天的安排</p>
+        <div class="uf-gate-actions">
+          <button type="button" class="uf-gate-skip" data-uf-gate-skip>直接进入</button>
+          <label class="uf-gate-noshow"><input type="checkbox" data-uf-gate-noshow> 以后不再显示</label>
+        </div>
+      </div>`;
+    document.documentElement.classList.add('uf-gate-open');
+    document.body.append(gate);
+
+    const close = () => {
+      if (gate.querySelector('[data-uf-gate-noshow]').checked) localStorage.setItem(GATE_OFF, '1');
+      sessionStorage.setItem(GATE_SEEN, '1');
+      document.documentElement.classList.remove('uf-gate-open');
+      gate.classList.add('is-leaving');
+      setTimeout(() => gate.remove(), 420);
+      document.getElementById('main')?.focus({ preventScroll: true });
+      if (petEl) say('进来啦，今天也顺顺当当', 3000);
+    };
+    gate.querySelector('.uf-gate-pet').addEventListener('click', close);
+    gate.querySelector('[data-uf-gate-skip]').addEventListener('click', close);
+    gate.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+    setTimeout(() => gate.querySelector('.uf-gate-pet')?.focus({ preventScroll: true }), 60);
+  }
+
+  function shouldShowGate() {
+    if (localStorage.getItem(GATE_OFF) === '1') return false;
+    if (sessionStorage.getItem(GATE_SEEN) === '1') return false;
+    // 首次使用交给原生引导页，避免两层遮罩
+    if (!localStorage.getItem(NICK_KEY)) return false;
+    if (document.documentElement.classList.contains('onboarding-pending')) return false;
+    if (!$('#onboarding')?.hidden) return false;
+    return true;
+  }
+
+  /* ---------------- 启动 ---------------- */
+  function boot() {
+    if (localStorage.getItem(PET_HIDDEN) === '1' && !shouldShowGate()) return;
+    if (!petEl && localStorage.getItem(PET_HIDDEN) !== '1') buildPet();
+    if (petEl) syncPet(window.UniFlowApp?.tasks?.() || []);
+    if (shouldShowGate()) {
+      buildGate();
+    }
+  }
+
+  window.addEventListener('uniflow:rendered', () => {
+    if (!petEl) return;
+    syncPet(window.UniFlowApp?.tasks?.() || []);
+    closeMenu();
+  });
+
+  const start = () => setTimeout(boot, 700);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+
+  window.UniFlowPet = {
+    show() { localStorage.removeItem(PET_HIDDEN); if (!petEl) buildPet(); boot(); },
+    hide() { localStorage.setItem(PET_HIDDEN, '1'); petEl?.remove(); petEl = null; },
+    state: () => petEl?.dataset.state || 'hidden'
+  };
+})();
