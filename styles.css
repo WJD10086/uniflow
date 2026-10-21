@@ -263,3 +263,9 @@ html[data-theme="dark"] textarea{background:#0d1726;border-color:#24314a;color:v
 html[data-theme="dark"] select option{background:#0d1726;color:var(--ink)}
 html[data-theme="dark"] input::placeholder,html[data-theme="dark"] textarea::placeholder{color:#6f839c}
 html[data-theme="dark"] input[type="checkbox"],html[data-theme="dark"] input[type="radio"]{accent-color:#5b8dff}
+
+/* 深色模式：覆盖后加载样式表里的原生控件（提高权重） */
+html[data-theme="dark"] body select,
+html[data-theme="dark"] body input:not([type="checkbox"]):not([type="radio"]),
+html[data-theme="dark"] body textarea{background:#0d1726!important;border-color:#24314a;color:var(--ink)!important}
+html[data-theme="dark"] body select option{background:#0d1726;color:var(--ink)}
