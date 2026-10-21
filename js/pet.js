@@ -1,4 +1,4 @@
-﻿/* UniFlow 桌宠「小流」：入口场景 + 右下角常驻陪伴。
+/* UniFlow 桌宠「小流」：入口场景 + 右下角常驻陪伴。
    只读取 window.UniFlowApp 的数据与触发既有按钮，不改动 app.js 逻辑。 */
 (function () {
   'use strict';
@@ -251,6 +251,35 @@
     return true;
   }
 
+  /* ---------------- 设置页：桌宠开关 ---------------- */
+  function renderSettingsToggle() {
+    if ((location.hash || '').slice(1) !== 'settings') return;
+    const grid = document.querySelector('#main .settings-grid');
+    if (!grid || grid.querySelector('#uf-pet-settings')) return;
+    const hidden = localStorage.getItem(PET_HIDDEN) === '1';
+    const card = document.createElement('section');
+    card.className = 'card settings-section';
+    card.id = 'uf-pet-settings';
+    card.innerHTML = `<h2>桌宠小流</h2>
+      <div class="setting-row"><div><h3>在右下角陪着你</h3><p>点击它可打开快捷操作；关掉后不再出现</p></div>
+        <button class="toggle" role="switch" aria-label="显示桌宠" aria-checked="${hidden ? 'false' : 'true'}" data-uf-pet-toggle></button></div>`;
+    grid.append(card);
+    card.querySelector('[data-uf-pet-toggle]').addEventListener('click', () => {
+      const nowHidden = localStorage.getItem(PET_HIDDEN) === '1';
+      if (nowHidden) {
+        localStorage.removeItem(PET_HIDDEN);
+        if (!petEl) buildPet();
+        syncPet(window.UniFlowApp?.tasks?.() || []);
+        say('我又回来啦', 2600);
+      } else {
+        localStorage.setItem(PET_HIDDEN, '1');
+        petEl?.remove();
+        petEl = null;
+      }
+      card.querySelector('[data-uf-pet-toggle]').setAttribute('aria-checked', String(nowHidden));
+    });
+  }
+
   /* ---------------- 启动 ---------------- */
   function boot() {
     if (localStorage.getItem(PET_HIDDEN) === '1' && !shouldShowGate()) return;
@@ -259,12 +288,15 @@
     if (shouldShowGate()) {
       buildGate();
     }
+    renderSettingsToggle();
   }
 
   window.addEventListener('uniflow:rendered', () => {
-    if (!petEl) return;
-    syncPet(window.UniFlowApp?.tasks?.() || []);
-    closeMenu();
+    if (petEl) {
+      syncPet(window.UniFlowApp?.tasks?.() || []);
+      closeMenu();
+    }
+    renderSettingsToggle();
   });
 
   const start = () => setTimeout(boot, 700);
