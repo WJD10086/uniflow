@@ -1,4 +1,4 @@
-﻿/* UniFlow 桌宠「小流」：入口场景 + 右下角常驻陪伴。
+/* UniFlow 桌宠「小流」：入口场景 + 右下角常驻陪伴。
    只读取 window.UniFlowApp 的数据与触发既有按钮，不改动 app.js 逻辑。 */
 (function () {
   'use strict';
@@ -241,7 +241,7 @@
       return;
     }
     try {
-      const win = await window.documentPictureInPicture.requestWindow({ width: 240, height: 260 });
+      const win = await window.documentPictureInPicture.requestWindow({ width: 250, height: 320 });
       pipWin = win;
       const doc = win.document;
       doc.title = 'UniFlow 桌宠';
@@ -252,6 +252,18 @@
       doc.body.className = 'uf-pip-body';
       doc.documentElement.dataset.theme = document.documentElement.dataset.theme || 'light';
       doc.body.append(petEl);
+
+      // 浮窗尺寸只能由用户手势调整，给一个“缩到最小”按钮
+      const shrinkBtn = doc.createElement('button');
+      shrinkBtn.type = 'button';
+      shrinkBtn.className = 'uf-pip-shrink';
+      shrinkBtn.textContent = '⤡ 缩到最小';
+      shrinkBtn.addEventListener('click', () => {
+        try { win.resizeTo(250, 320); } catch { }
+        try { shrinkBtn.remove(); } catch { }
+      });
+      doc.body.append(shrinkBtn);
+
       const tip = doc.createElement('p');
       tip.className = 'uf-pip-tip';
       tip.textContent = '拖窗口边缘可移动 · 点小流回到网页';
