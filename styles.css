@@ -255,3 +255,11 @@ html[data-theme="dark"] .guide-list summary{color:#dbe6f5}
 html[data-theme="dark"] .onboarding-card{background:linear-gradient(160deg,#111a28,#0f1a29);border-color:#1d2c42;color:var(--ink)}
 html[data-theme="dark"] .tutorial-note{background:#101b2a;color:#93a3b8}
 html[data-theme="dark"] .tutorial-card .onboarding-subtitle{color:#93a3b8}
+
+/* 深色模式：原生表单控件 */
+html[data-theme="dark"] select,
+html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),
+html[data-theme="dark"] textarea{background:#0d1726;border-color:#24314a;color:var(--ink)}
+html[data-theme="dark"] select option{background:#0d1726;color:var(--ink)}
+html[data-theme="dark"] input::placeholder,html[data-theme="dark"] textarea::placeholder{color:#6f839c}
+html[data-theme="dark"] input[type="checkbox"],html[data-theme="dark"] input[type="radio"]{accent-color:#5b8dff}
