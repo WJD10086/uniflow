@@ -87,13 +87,14 @@
     }
   }
 
-  // 捕获阶段接管网页图片的两个按钮
+  // 捕获阶段接管网页图片相关的按钮：
+  // ai-image / ocr-image 在图片预览面板里，ai-extract 是导入弹窗底部的主按钮
   document.addEventListener('click', event => {
-    const button = event.target.closest?.('[data-ai-action="ai-image"], [data-ai-action="ocr-image"]');
+    const button = event.target.closest?.('[data-ai-action="ai-image"], [data-ai-action="ocr-image"], [data-ai-action="ai-extract"]');
     if (!button) return;
     const api = window.UniFlowAIUI;
     const image = api?.selectedImage?.();
-    if (!image || image.imageId) return; // 原生流程不拦截
+    if (!image || image.imageId) return; // 没有网页图片，或原生流程 → 不拦截
     event.stopImmediatePropagation();
     event.preventDefault();
     runImage(button.dataset.aiAction === 'ocr-image');
