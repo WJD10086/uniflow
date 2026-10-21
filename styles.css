@@ -397,3 +397,31 @@ html[data-theme="dark"] .uf-pet-svg--gate{filter:drop-shadow(0 18px 26px rgba(0,
 .uf-gate-deco.d1{width:15px;height:15px}
 .uf-gate-deco.d4{width:11px;height:11px}
 @media(max-width:600px){.uf-pet-svg--gate{width:212px;height:218px}}
+
+/* 桌宠：可拖动 + 桌面浮窗 */
+.uf-pet{display:block;width:86px;height:86px;gap:0}
+.uf-pet-button{position:absolute;right:0;bottom:0;width:86px;height:86px;cursor:grab;touch-action:none;user-select:none}
+.uf-pet-button:hover{cursor:grab}
+.uf-pet-bubble{position:absolute;right:0;bottom:calc(100% + 12px);margin:0;width:max-content}
+.uf-pet-menu{position:absolute;right:0;bottom:calc(100% + 12px);width:max-content}
+.uf-pet.is-flip .uf-pet-bubble,.uf-pet.is-flip .uf-pet-menu{bottom:auto;top:calc(100% + 12px)}
+.uf-pet.is-flip .uf-pet-bubble::after{bottom:auto;top:-6px;transform:rotate(225deg)}
+.uf-pet.is-dragging .uf-pet-button{cursor:grabbing;transform:none!important;box-shadow:0 18px 36px rgba(38,79,146,.28)}
+.uf-pet.is-dragging .uf-pet-svg{animation:none}
+.uf-pet.is-dragging{transition:none}
+@media(max-width:600px){
+  .uf-pet{width:66px;height:66px}
+  .uf-pet-button{width:66px;height:66px}
+}
+
+/* 桌面浮窗（Document PiP）内容 */
+.uf-pip-body{margin:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;overflow:hidden;background:radial-gradient(circle at 50% 32%,#f7fbff,#e4efff 78%);font-family:'微软雅黑','Segoe UI',sans-serif}
+.uf-pip-body .uf-pet{position:relative!important;inset:auto!important;left:auto!important;top:auto!important;width:150px;height:150px}
+.uf-pip-body .uf-pet-button{width:150px;height:150px;border:0;background:none;box-shadow:none}
+.uf-pip-body .uf-pet-button:hover{transform:translateY(-4px) scale(1.03);box-shadow:none}
+.uf-pip-body .uf-pet-svg{width:136px;height:140px}
+.uf-pip-body .uf-pet-bubble{bottom:calc(100% + 10px);right:50%;transform:translateX(50%);width:196px;text-align:center}
+.uf-pip-body .uf-pet-menu{right:50%;transform:translateX(50%)}
+.uf-pip-tip{font-size:10px;color:#8ba0bd;text-align:center;line-height:1.6;margin:0;padding:0 12px}
+html[data-theme="dark"] body.uf-pip-body{background:radial-gradient(circle at 50% 32%,#132033,#0b1422 80%)}
+html[data-theme="dark"] body.uf-pip-body .uf-pip-tip{color:#7f93ae}

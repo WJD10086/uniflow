@@ -1,4 +1,4 @@
-/* UniFlow 桌宠「小流」：入口场景 + 右下角常驻陪伴。
+﻿/* UniFlow 桌宠「小流」：入口场景 + 右下角常驻陪伴。
    只读取 window.UniFlowApp 的数据与触发既有按钮，不改动 app.js 逻辑。 */
 (function () {
   'use strict';
@@ -105,22 +105,30 @@
       <div class="uf-pet-bubble" role="status" hidden></div>
       <div class="uf-pet-menu" hidden>
         <button type="button" class="uf-pet-item" data-uf-pet-go>进入 UniFlow</button>
+        <button type="button" class="uf-pet-item" data-uf-pet-pip>浮到桌面（置顶）</button>
         <button type="button" class="uf-pet-item" data-uf-pet-import>导入通知</button>
         <button type="button" class="uf-pet-item" data-uf-pet-new>新建任务</button>
         <button type="button" class="uf-pet-item uf-pet-item--quiet" data-uf-pet-hide>先藏起来</button>
       </div>
-      <button type="button" class="uf-pet-button" aria-label="桌宠小流：点击打开快捷操作" aria-haspopup="true" aria-expanded="false">
+      <button type="button" class="uf-pet-button" aria-label="桌宠小流：点击打开快捷操作，按住可拖动" aria-haspopup="true" aria-expanded="false">
         ${mascot()}
         <span class="uf-pet-dot" aria-hidden="true"></span>
       </button>`;
     document.body.append(wrap);
     petEl = wrap;
 
-    wrap.querySelector('.uf-pet-button').addEventListener('click', () => {
+    const button = wrap.querySelector('.uf-pet-button');
+    button.addEventListener('click', () => {
+      if (suppressClick) { suppressClick = false; return; }
       if (menuOpen) closeMenu(); else openMenu();
     });
+    button.addEventListener('pointerdown', beginDrag);
+    button.addEventListener('pointermove', moveDrag);
+    button.addEventListener('pointerup', endDrag);
+    button.addEventListener('pointercancel', endDrag);
+    button.addEventListener('contextmenu', e => e.preventDefault());
 
-    wrap.addEventListener('mouseenter', () => { if (!menuOpen) say(randomTip(), 2600); });
+    wrap.addEventListener('mouseenter', () => { if (!menuOpen && !dragging) say(randomTip(), 2600); });
     wrap.addEventListener('mouseleave', () => { if (!menuOpen) hideBubble(); });
 
     wrap.querySelector('[data-uf-pet-go]').addEventListener('click', () => {
@@ -129,6 +137,7 @@
       document.getElementById('main')?.focus({ preventScroll: true });
       say('回来啦，先看今天要做什么', 2600);
     });
+    wrap.querySelector('[data-uf-pet-pip]').addEventListener('click', () => { closeMenu(); togglePip(); });
     wrap.querySelector('[data-uf-pet-import]').addEventListener('click', () => {
       closeMenu();
       document.querySelector('[data-action="import"]')?.click();
@@ -150,6 +159,128 @@
       if (!e.target.closest('#uf-pet')) closeMenu();
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+    window.addEventListener('resize', () => applyPosition(true));
+    applyPosition();
+  }
+
+  /* ---------------- 拖动与位置记忆 ---------------- */
+  const POS_KEY = 'uf.pet.pos';
+  let dragging = false, dragStart = null, suppressClick = false;
+
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+  function readPos() {
+    try { const p = JSON.parse(localStorage.getItem(POS_KEY) || 'null'); return p && Number.isFinite(p.x) && Number.isFinite(p.y) ? p : null; }
+    catch { return null; }
+  }
+  function savePos(x, y) {
+    try { localStorage.setItem(POS_KEY, JSON.stringify({ x: Math.round(x), y: Math.round(y) })); } catch { }
+  }
+  function placeAt(x, y) {
+    if (!petEl) return;
+    const w = petEl.offsetWidth || 86, h = petEl.offsetHeight || 86;
+    const left = clamp(x, 8, window.innerWidth - w - 8);
+    const top = clamp(y, 8, window.innerHeight - h - 8);
+    petEl.style.right = 'auto';
+    petEl.style.bottom = 'auto';
+    petEl.style.left = left + 'px';
+    petEl.style.top = top + 'px';
+    petEl.classList.toggle('is-flip', top < 170);
+    return { left, top };
+  }
+  function applyPosition(reset = false) {
+    if (!petEl || isPipMode()) return;
+    if (reset) {
+      const rect = petEl.getBoundingClientRect();
+      const p = placeAt(rect.left, rect.top);
+      if (p) savePos(p.left, p.top);
+      return;
+    }
+    const saved = readPos();
+    if (saved) placeAt(saved.x, saved.y);
+  }
+
+  function beginDrag(e) {
+    if (e.button !== undefined && e.button !== 0) return;
+    if (isPipMode()) return;
+    const rect = petEl.getBoundingClientRect();
+    dragStart = { x: e.clientX, y: e.clientY, left: rect.left, top: rect.top, id: e.pointerId, moved: false };
+    petEl.classList.add('is-dragging');
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch { }
+    e.preventDefault();
+  }
+  function moveDrag(e) {
+    if (!dragStart || e.pointerId !== dragStart.id) return;
+    const dx = e.clientX - dragStart.x, dy = e.clientY - dragStart.y;
+    if (!dragStart.moved && Math.hypot(dx, dy) > 4) { dragStart.moved = true; dragging = true; hideBubble(); }
+    if (!dragStart.moved) return;
+    placeAt(dragStart.left + dx, dragStart.top + dy);
+  }
+  function endDrag(e) {
+    if (!dragStart) return;
+    const moved = dragStart.moved;
+    dragStart = null;
+    dragging = false;
+    petEl?.classList.remove('is-dragging');
+    if (moved) {
+      const rect = petEl.getBoundingClientRect();
+      savePos(rect.left, rect.top);
+      suppressClick = true;
+      setTimeout(() => { suppressClick = false; }, 250);
+    }
+  }
+
+  /* ---------------- 桌面浮窗（Document Picture-in-Picture） ---------------- */
+  let pipWin = null;
+  const isPipMode = () => !!pipWin && !pipWin.closed;
+
+  async function togglePip() {
+    if (isPipMode()) { closePip(); return; }
+    if (!('documentPictureInPicture' in window)) {
+      say('当前浏览器不支持桌面浮窗，Edge / Chrome 116 以上可以', 4200);
+      return;
+    }
+    try {
+      const win = await window.documentPictureInPicture.requestWindow({ width: 240, height: 260 });
+      pipWin = win;
+      const doc = win.document;
+      doc.title = 'UniFlow 桌宠';
+      const link = doc.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = new URL('styles.css', location.href).href;
+      doc.head.append(link);
+      doc.body.className = 'uf-pip-body';
+      doc.documentElement.dataset.theme = document.documentElement.dataset.theme || 'light';
+      doc.body.append(petEl);
+      const tip = doc.createElement('p');
+      tip.className = 'uf-pip-tip';
+      tip.textContent = '拖窗口边缘可移动 · 点小流回到网页';
+      doc.body.append(tip);
+      petEl.classList.remove('is-flip');
+      petEl.classList.add('uf-pet--pip');
+      hideBubble();
+      say('我到桌面上啦，最小化浏览器也还在', 4200);
+      win.addEventListener('pagehide', () => { restoreFromPip(); });
+      petEl.querySelector('.uf-pet-button').addEventListener('click', focusOpener);
+    } catch (error) {
+      say('桌面浮窗没有打开成功，可以再试一次', 3600);
+    }
+  }
+  function focusOpener() {
+    try { window.focus(); } catch { }
+  }
+  function restoreFromPip() {
+    if (!pipWin) return;
+    pipWin = null;
+    if (!petEl) return;
+    petEl.classList.remove('uf-pet--pip');
+    document.body.append(petEl);
+    applyPosition();
+    say('回到网页啦', 2600);
+  }
+  function closePip() {
+    try { pipWin?.close(); } catch { }
+    restoreFromPip();
   }
 
   function randomTip() { return TIPS[Math.floor(Math.random() * TIPS.length)]; }
