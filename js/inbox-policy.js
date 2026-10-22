@@ -21,7 +21,7 @@
     for(const task of state.tasks||[]){if(task.noticeId)protectedSet.add(task.noticeId);if(task.sourceMessage?.id)protectedSet.add(task.sourceMessage.id);}
     const eligible=(state.notices||[]).filter(n=>{
       const value=Relevance.assessment(n),time=NoticeTime.effective(n);
-      return n.source==='android_notification'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(n.captureId||'')&&Number.isSafeInteger(n.captureVersion)&&n.captureVersion>0&&
+      return ['android_notification','windows_notification'].includes(n.source)&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(n.captureId||'')&&Number.isSafeInteger(n.captureVersion)&&n.captureVersion>0&&
         value.label==='ordinary'&&value.automaticLabel==='ordinary'&&n.relevanceFeedback?.decision!=='relevant'&&
         !protectedSet.has(n.id)&&!n.taskId&&!(n.taskIds?.length)&&n.status!=='confirmed'&&
         !n.aiInProgress&&!n.needsConfirmation&&!['processing','pending_confirmation'].includes(n.aiStatus)&&!(n.pendingCandidates?.length)&&

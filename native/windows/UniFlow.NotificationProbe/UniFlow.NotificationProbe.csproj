@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <WindowsSdkPackageVersion>10.0.28000.87</WindowsSdkPackageVersion>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RestoreConfigFile>$(MSBuildThisFileDirectory)..\NuGet.config</RestoreConfigFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="UniFlow.NotificationProbe.Tests" />
+  </ItemGroup>
+</Project>

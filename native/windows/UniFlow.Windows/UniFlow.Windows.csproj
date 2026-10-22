@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <WindowsSdkPackageVersion>10.0.28000.87</WindowsSdkPackageVersion>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RestoreConfigFile>$(MSBuildThisFileDirectory)..\NuGet.config</RestoreConfigFile>
+    <AssemblyName>UniFlow.Windows</AssemblyName>
+    <RootNamespace>UniFlow.Windows</RootNamespace>
+    <Version>1.7.0</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3537.50" GeneratePathProperty="true" ExcludeAssets="all" />
+    <InternalsVisibleTo Include="UniFlow.Windows.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Web.WebView2.Core" HintPath="$(PkgMicrosoft_Web_WebView2)\lib_manual\netcoreapp3.0\Microsoft.Web.WebView2.Core.dll" Private="true" />
+    <Reference Include="Microsoft.Web.WebView2.WinForms" HintPath="$(PkgMicrosoft_Web_WebView2)\lib_manual\netcoreapp3.0\Microsoft.Web.WebView2.WinForms.dll" Private="true" />
+    <Content Include="$(PkgMicrosoft_Web_WebView2)\runtimes\win-x64\native\WebView2Loader.dll" Link="WebView2Loader.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

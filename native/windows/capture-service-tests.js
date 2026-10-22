@@ -1,0 +1,13 @@
+'use strict';
+const assert=require('assert');
+const Capture=require('../../js/notification-capture-service.js');
+const id='11111111-1111-4111-8111-111111111111';
+const base={id,version:1,appName:'QQ',packageName:'Tencent.QQ_abc!App',title:'消息',content:'你好',receivedAt:'2026-10-22T00:00:00.000Z',originalNotification:{title:'消息',text:'你好',bigText:'',lines:[]},history:[]};
+Capture.setSource('windows_notification');
+const notice=Capture.adapt(base);
+assert.equal(notice.id,'windows-capture:'+id); assert.equal(notice.source,'windows_notification');
+const draft={notices:[],captureDeletedIds:[]}; let result=Capture.merge(draft,[base],100); assert(result.changed); assert.equal(result.ack[0].version,1);
+draft.notices[0].status='confirmed'; result=Capture.merge(draft,[{...base,version:2,content:'更新'}],100); assert(result.changed); assert.equal(draft.notices[0].status,'confirmed'); assert.equal(draft.notices[0].captureVersion,2);
+Capture.markDeleted(draft,draft.notices[0]); assert(draft.captureDeletedIds.includes(id));
+Capture.setSource('android_notification'); assert.throws(()=>Capture.adapt(base));
+console.log('PASS Windows capture adapter, merge, update and tombstone checks');

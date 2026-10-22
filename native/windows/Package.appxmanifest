@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+         xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+         xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" IgnorableNamespaces="uap uap3 rescap">
+  <Identity Name="WJD10086.UniFlow" Publisher="CN=UniFlow" Version="1.7.0.0" ProcessorArchitecture="x64" />
+  <Properties><DisplayName>UniFlow</DisplayName><PublisherDisplayName>UniFlow</PublisherDisplayName><Description>本地优先的校园通知与日程助手</Description><Logo>Assets\StoreLogo.png</Logo></Properties>
+  <Resources><Resource Language="zh-CN" /></Resources>
+  <Dependencies><TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26200.0" /></Dependencies>
+  <Capabilities><uap3:Capability Name="userNotificationListener" /><rescap:Capability Name="runFullTrust" /></Capabilities>
+  <Applications><Application Id="App" Executable="UniFlow.Windows.exe" EntryPoint="Windows.FullTrustApplication">
+    <uap:VisualElements DisplayName="UniFlow" Description="UniFlow" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" BackgroundColor="#2563EB" />
+  </Application></Applications>
+</Package>
